@@ -28,12 +28,13 @@ void render();
 
 int main(int argc, char* argv[])
 {
+
 	if (SDL_Init(SDL_INIT_EVERYTHING) >= 0)
 	{
-		g_pWindow = SDL_CreateWindow("Game Framework",
+		g_pWindow = SDL_CreateWindow("Test3",
 			SDL_WINDOWPOS_CENTERED,
-			SDL_WINDOWPOS_CENTERED, 1024, 768,
-			SDL_WINDOW_SHOWN);
+			SDL_WINDOWPOS_CENTERED, 300, 300,
+			SDL_WINDOW_BORDERLESS | SDL_WINDOW_MAXIMIZED);
 
 		if (g_pWindow != 0)
 		{
@@ -45,11 +46,11 @@ int main(int argc, char* argv[])
 	}
 
 	SDL_SetRenderDrawColor(
-		g_pRenderer, 0, 0, 0, 255);
+		g_pRenderer, 0, 0, 255, 255);
 	SDL_RenderClear(g_pRenderer);
 	SDL_RenderPresent(g_pRenderer);
 
-	SDL_Delay(5000);
+	SDL_Delay(10000);
 	SDL_Quit();
 
 
