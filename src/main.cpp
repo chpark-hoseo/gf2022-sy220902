@@ -28,24 +28,28 @@ void render();
 
 int main(int argc, char* argv[])
 {
-	if (!init())
+	if (SDL_Init(SDL_INIT_EVERYTHING) >= 0)
 	{
-		return 1; // something's wrong
+		g_pWindow = SDL_CreateWindow("Setting up SDL",
+			SDL_WINDOWPOS_CENTERED,
+			SDL_WINDOWPOS_CENTERED, 640, 480,
+			SDL_WINDOW_SHOWN);
+
+		if (g_pWindow != 0)
+		{
+			g_pRenderer
+				= SDL_CreateRenderer(g_pWindow, -1, 0);
+		}
+		else
+			return 1;
 	}
 
-	g_bRunning = true;
+	SDL_SetRenderDrawColor(
+		g_pRenderer, 0, 0, 0, 255);
+	SDL_RenderClear(g_pRenderer);
+	SDL_RenderPresent(g_pRenderer);
 
-	while (g_bRunning)
-	{
-		handleInput();
-		update();
-		render();
-	}
-
-	Mix_CloseAudio();
-	Mix_Quit();
-	TTF_CloseFont(g_pFont);
-	TTF_Quit();
+	SDL_Delay(5000);
 	SDL_Quit();
 
 	return 0;
