@@ -30,9 +30,9 @@ int main(int argc, char* argv[])
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) >= 0)
 	{
-		g_pWindow = SDL_CreateWindow("Setting up SDL",
+		g_pWindow = SDL_CreateWindow("Game Framework",
 			SDL_WINDOWPOS_CENTERED,
-			SDL_WINDOWPOS_CENTERED, 640, 480,
+			SDL_WINDOWPOS_CENTERED, 1024, 768,
 			SDL_WINDOW_SHOWN);
 
 		if (g_pWindow != 0)
