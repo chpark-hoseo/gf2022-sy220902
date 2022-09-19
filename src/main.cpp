@@ -64,6 +64,8 @@ bool init(const char* title, int xpos, int ypos, int height, int width, int flag
 	{
 		return false;
 	}
+
+
 	SDL_SetRenderDrawColor(g_pRenderer, 0, 0, 0, 255);
 
 	return true;
@@ -77,7 +79,8 @@ void update()
 
 void render()
 {
-	SDL_SetRenderDrawColor(g_pRenderer, 0, 0, 0, 255);
+	SDL_SetRenderDrawColor(g_pRenderer, rand() % 256, rand() % 256, rand() % 256, 255);
+	SDL_Delay(2000);
 	SDL_RenderClear(g_pRenderer);
 	SDL_RenderPresent(g_pRenderer);
 }
