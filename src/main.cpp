@@ -25,6 +25,7 @@ bool			g_bLeftMousePressed = false;
 bool init(const char* title, int xpos, int ypos, int height, int width, int flags);
 void update();
 void render();
+void handleInput();
 
 int main(int argc, char* argv[])
 {
@@ -42,6 +43,7 @@ int main(int argc, char* argv[])
 
 	while (g_bRunning)
 	{
+		handleInput();
 		update();
 		render();
 	}
@@ -83,4 +85,18 @@ void render()
 	SDL_Delay(2000);
 	SDL_RenderClear(g_pRenderer);
 	SDL_RenderPresent(g_pRenderer);
+}
+
+void handleInput()
+{
+	SDL_Event event;
+	while (SDL_PollEvent(&event))
+	{
+		switch (event.type)
+		{
+		case SDL_QUIT:
+			g_bRunning = false;
+			break;
+		}
+	}
 }
