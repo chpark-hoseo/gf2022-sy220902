@@ -19,13 +19,15 @@ SDL_Rect 		g_RectText;
 TTF_Font*		g_pFont;
 Mix_Chunk*		g_pChunk;
 
+SDL_Event esc;
+
 bool			g_bRunning = false; // true인 동안 게임 루프가 작동, false인 동안 작동하지 않게 하는 역할
 bool			g_bLeftMousePressed = false;
 
 bool init(const char* title, int xpos, int ypos, int height, int width, int flags);
 void update();
 void render();
-void handleInput();
+void escape();
 
 int main(int argc, char* argv[])
 {
@@ -43,7 +45,7 @@ int main(int argc, char* argv[])
 
 	while (g_bRunning)
 	{
-		handleInput();
+		escape();
 		update();
 		render();
 	}
@@ -73,10 +75,20 @@ bool init(const char* title, int xpos, int ypos, int height, int width, int flag
 	return true;
 }
 
+void escape()
+{
+	while (SDL_PollEvent(&esc))
+	{
+		if (esc.type == SDL_MOUSEBUTTONDOWN)
+		{
+			std::cout << "escape";
+			g_bRunning = false;
+		}
+	}
+}
 
 void update()
 {
-
 }
 
 void render()
@@ -87,16 +99,3 @@ void render()
 	SDL_RenderPresent(g_pRenderer);
 }
 
-void handleInput()
-{
-	SDL_Event event;
-	while (SDL_PollEvent(&event))
-	{
-		switch (event.type)
-		{
-		case SDL_QUIT:
-			g_bRunning = false;
-			break;
-		}
-	}
-}
