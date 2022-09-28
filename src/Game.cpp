@@ -18,7 +18,7 @@ bool Game::init(const char* title, int xpos, int ypos, int height, int width, in
             }
         }
         else {
-            return false; // 윈도우 생설 실패 l
+            return false; // 윈도우 생성 실패
         }
     }
     else {
@@ -53,8 +53,9 @@ void Game::update()
 void Game::render()
 {
     SDL_RenderClear(m_pRenderer);
-    SDL_RenderPresent(m_pRenderer);
     SDL_RenderCopy(m_pRenderer, m_pTexture, &m_sourceRectangle, &m_destinationRectangle);
+    SDL_RenderPresent(m_pRenderer);
+    
 }
 
 bool Game::running()
