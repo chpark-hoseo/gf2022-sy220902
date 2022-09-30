@@ -15,6 +15,7 @@ public:
 	bool running();
 	void handleEvents();
 	void clean();
+	bool move = false;
 
 private:
 	SDL_Window* m_pWindow;

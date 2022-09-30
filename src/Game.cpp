@@ -47,6 +47,18 @@ bool Game::init(const char* title, int xpos, int ypos, int height, int width, in
 
 void Game::update()
 {
+    if (move == false)
+    {
+        if (m_destinationRectangle.x < 360)
+            m_destinationRectangle.x++;
+        else if (m_destinationRectangle.x == 360)
+            move = true;
+    }
+    else if (move == true && m_destinationRectangle.x > 0)
+    {
+        m_destinationRectangle.x--;
+    }
+
     // 게임 데이터 갱신
 }
 
