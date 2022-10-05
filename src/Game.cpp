@@ -44,8 +44,8 @@ bool Game::init(const char* title, int xpos, int ypos, int height, int width, in
     m_destinationRectangle.h = m_sourceRectangle.h;
 
     // 원본상자/대상상자의 위치 설정
-    m_destinationRectangle.x = 0;
-    m_destinationRectangle.y = 0;
+    m_destinationRectangle.x = 150;
+    m_destinationRectangle.y = 150;
 
 
 
