@@ -36,8 +36,8 @@ bool Game::init(const char* title, int xpos, int ypos, int height, int width, in
     SDL_QueryTexture(m_pTexture, NULL, NULL,
         &m_sourceRectangle.w, &m_sourceRectangle.h);
 
-    m_sourceRectangle.x = -75;
-    m_sourceRectangle.y = -35;
+    m_sourceRectangle.x = 50;
+    m_sourceRectangle.y = 50;
 
     // 대상상자의 너비/높이 설정
     m_destinationRectangle.w = m_sourceRectangle.w;
