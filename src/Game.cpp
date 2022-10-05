@@ -25,14 +25,16 @@ bool Game::init(const char* title, int xpos, int ypos, int height, int width, in
         return false; // SDL 초기화 실패
     }
 
-    SDL_Surface* pTempSurface = SDL_LoadBMP("Assets/rider.bmp");
+    SDL_Surface* pTempSurface = SDL_LoadBMP("Assets/animate.bmp");
 
     m_pTexture = SDL_CreateTextureFromSurface(m_pRenderer, pTempSurface);
 
+
+
     SDL_FreeSurface(pTempSurface);
 
-    SDL_QueryTexture(m_pTexture, NULL, NULL,
-        &m_sourceRectangle.w, &m_sourceRectangle.h);
+    m_sourceRectangle.w = 128;
+    m_sourceRectangle.h = 82;
 
     m_destinationRectangle.w = m_sourceRectangle.w;
     m_destinationRectangle.h = m_sourceRectangle.h;
@@ -47,6 +49,9 @@ bool Game::init(const char* title, int xpos, int ypos, int height, int width, in
 
 void Game::update()
 {
+    m_sourceRectangle.x = 128 * ((SDL_GetTicks() / 100) % 6);
+
+    
     if (move == false)
     {
         if (m_destinationRectangle.x < 360)
@@ -57,7 +62,10 @@ void Game::update()
     else if (move == true && m_destinationRectangle.x > 0)
     {
         m_destinationRectangle.x--;
+        if (m_destinationRectangle.x == 0)
+            move = false;
     }
+    SDL_Delay(50);
 
     // 게임 데이터 갱신
 }
