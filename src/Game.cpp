@@ -25,7 +25,7 @@ bool Game::init(const char* title, int xpos, int ypos, int height, int width, in
         return false; // SDL 초기화 실패
     }
 
-    SDL_Surface* pTempSurface = IMG_Load("Assets/animate.png");
+    SDL_Surface* pTempSurface = IMG_Load("Assets/animate-alpha.png");
 
     m_pTexture = SDL_CreateTextureFromSurface(m_pRenderer, pTempSurface);
 
