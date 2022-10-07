@@ -1,5 +1,6 @@
-#include "Game.h"
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL.h>
+#include "Game.h"
 
 bool Game::init(const char* title, int xpos, int ypos, int height, int width, int flags)
 {
@@ -27,20 +28,13 @@ bool Game::init(const char* title, int xpos, int ypos, int height, int width, in
 
     SDL_Surface* pTempSurface = IMG_Load("Assets/animate-alpha.png");
 
-    m_pTexture = SDL_CreateTextureFromSurface(m_pRenderer, pTempSurface);
+    m_textureManager.load("Assets/animate-alpha.png", "animate", m_pRenderer);
 
 
 
-    SDL_FreeSurface(pTempSurface);
 
-    m_sourceRectangle.w = 128;
-    m_sourceRectangle.h = 82;
+//    SDL_FreeSurface(pTempSurface);
 
-    m_destinationRectangle.w = m_sourceRectangle.w;
-    m_destinationRectangle.h = m_sourceRectangle.h;
-
-    m_destinationRectangle.x = m_sourceRectangle.x = 0;
-    m_destinationRectangle.y = m_sourceRectangle.y = 0;
 
 
     m_bRunning = true;
@@ -49,31 +43,16 @@ bool Game::init(const char* title, int xpos, int ypos, int height, int width, in
 
 void Game::update()
 {
-    m_sourceRectangle.x = 128 * ((SDL_GetTicks() / 100) % 6);
-
-    
-    if (move == false)
-    {
-        if (m_destinationRectangle.x < 360)
-            m_destinationRectangle.x++;
-        else if (m_destinationRectangle.x == 360)
-            move = true;
-    }
-    else if (move == true && m_destinationRectangle.x > 0)
-    {
-        m_destinationRectangle.x--;
-        if (m_destinationRectangle.x == 0)
-            move = false;
-    }
-    SDL_Delay(50);
-
+    m_currentFrame = ((SDL_GetTicks() / 100) % 6);
     // 게임 데이터 갱신
 }
 
 void Game::render()
 {
     SDL_RenderClear(m_pRenderer);
-    SDL_RenderCopy(m_pRenderer, m_pTexture, &m_sourceRectangle, &m_destinationRectangle);
+    m_textureManager.draw("animate", 0, 0, 128, 82, m_pRenderer);
+    m_textureManager.drawFrame("animate", 100, 100, 128, 82, 0, m_currentFrame, m_pRenderer);
+    //SDL_RenderCopy(m_pRenderer, m_pTexture, &m_sourceRectangle, &m_destinationRectangle);
     SDL_RenderPresent(m_pRenderer);
     
 }

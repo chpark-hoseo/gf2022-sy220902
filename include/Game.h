@@ -1,6 +1,6 @@
 #ifndef __Game__
 #define __Game__
-#include <SDL2/SDL.h>
+#include <TextureManager.h>
 
 
 class Game
@@ -21,14 +21,8 @@ private:
 	SDL_Window* m_pWindow;
 	SDL_Renderer* m_pRenderer;
 	bool m_bRunning;
-
-	SDL_Texture* m_pTexture;
-
-	// 원본 사각형
-	SDL_Rect m_sourceRectangle;
-
-	// 대상 사각형
-	SDL_Rect m_destinationRectangle;
+	TextureManager m_textureManager;
+	int m_currentFrame;
 };
 
 
