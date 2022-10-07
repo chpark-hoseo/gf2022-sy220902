@@ -1,5 +1,5 @@
 #include "Game.h"
-
+#include <SDL2/SDL_image.h>
 
 bool Game::init(const char* title, int xpos, int ypos, int height, int width, int flags)
 {
@@ -10,8 +10,8 @@ bool Game::init(const char* title, int xpos, int ypos, int height, int width, in
             m_pRenderer = SDL_CreateRenderer(m_pWindow, -1, 0);
 
             if (m_pRenderer != 0) {
-                SDL_SetRenderDrawColor(
-                    m_pRenderer, 255, 255, 255, 255);
+                SDL_SetRenderDrawColor
+                (m_pRenderer, 255, 0, 0, 255); // 붉은색 배경);
             }
             else {
                 return false; // 랜더러 생성 실패
@@ -25,7 +25,7 @@ bool Game::init(const char* title, int xpos, int ypos, int height, int width, in
         return false; // SDL 초기화 실패
     }
 
-    SDL_Surface* pTempSurface = SDL_LoadBMP("Assets/animate.bmp");
+    SDL_Surface* pTempSurface = IMG_Load("Assets/animate.png");
 
     m_pTexture = SDL_CreateTextureFromSurface(m_pRenderer, pTempSurface);
 
