@@ -12,7 +12,7 @@ bool Game::init(const char* title, int xpos, int ypos, int height, int width, in
 
             if (m_pRenderer != 0) {
                 SDL_SetRenderDrawColor
-                (m_pRenderer, 255, 0, 0, 255); // 붉은색 배경);
+                (m_pRenderer, 0, 0, 0, 255); // );
             }
             else {
                 return false; // 랜더러 생성 실패
@@ -26,16 +26,11 @@ bool Game::init(const char* title, int xpos, int ypos, int height, int width, in
         return false; // SDL 초기화 실패
     }
 
-    SDL_Surface* pTempSurface = IMG_Load("Assets/animate-alpha.png");
 
-    m_textureManager.load("Assets/animate-alpha.png", "animate", m_pRenderer);
-
-
-
-
-//    SDL_FreeSurface(pTempSurface);
-
-
+    if (!TheTextureManager::Instance()->load("Assets/animate-alpha.png", "animate", m_pRenderer))
+    {
+        return false;
+    }
 
     m_bRunning = true;
     return true;
@@ -50,8 +45,15 @@ void Game::update()
 void Game::render()
 {
     SDL_RenderClear(m_pRenderer);
-    m_textureManager.draw("animate", 0, 0, 128, 82, m_pRenderer);
-    m_textureManager.drawFrame("animate", 100, 100, 128, 82, 0, m_currentFrame, m_pRenderer);
+
+    TheTextureManager::Instance()->draw("animate", 0, 0, 128, 82,
+        m_pRenderer);
+
+    TheTextureManager::Instance()->drawFrame("animate", 100, 100, 128,
+        82, 0, m_currentFrame, m_pRenderer);
+
+    //m_textureManager.draw("animate", 0, 0, 128, 82, m_pRenderer);
+    //m_textureManager.drawFrame("animate", 100, 100, 128, 82, 0, m_currentFrame, m_pRenderer);
     //SDL_RenderCopy(m_pRenderer, m_pTexture, &m_sourceRectangle, &m_destinationRectangle);
     SDL_RenderPresent(m_pRenderer);
     
