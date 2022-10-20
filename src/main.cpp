@@ -26,6 +26,9 @@ enum KeyPressSurfaces
 };
 */
 
+
+SDL_Texture* loadTexture(std::string path);
+
 // 로딩 경로를 복사 / 붙여넣기 하지 않게 해주는 함수?
 SDL_Surface* loadSurface(std::string path);
 
@@ -41,9 +44,16 @@ SDL_Surface* gScreenSurface = NULL;
 // gKeyPressSurfaces 중 하나를 화면에 blit 하기 위한 변수
 // SDL_Surface* gCurrentSurface = NULL;
 
-// 불러와서 화면에 출력할 배경 이미지를 가리켜줄 변수
+// gRender라는 글로벌 렌더러를 포인터로 선언
+SDL_Renderer* gRenderer = NULL;
 
+// 지금 현재 표시되고 있는 텍스쳐
+SDL_Texture* gTexture = NULL;
+
+
+// 불러와서 화면에 출력할 배경 이미지를 가리켜줄 변수
 SDL_Surface* gBackgroundSurface = NULL;
+
 
 
 // 함수 정의 ↓
@@ -51,7 +61,7 @@ SDL_Surface* gBackgroundSurface = NULL;
 bool init()
 {
     // 성공 / 실패 플래그 변수 만들기
-    bool success = true;
+    bool success = true;    
 
     // SDL 초기화
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
