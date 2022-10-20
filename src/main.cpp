@@ -1,207 +1,53 @@
-﻿// SDL 
-//
-// written by changhoonpark@gmail.com
+﻿#include "main.h"
 
 
-#include "main.h"
-
-
-SDL_Window*		g_pWindow = 0;
-SDL_Renderer*	g_pRenderer = 0;
-
-SDL_Texture*	g_pTexureImage;
-SDL_Rect		g_RectImage;
-
-SDL_Texture*	g_pTexureText;
-SDL_Rect 		g_RectText;
-
-TTF_Font*		g_pFont;
-Mix_Chunk*		g_pChunk;
-
-bool			g_bRunning = false;
-bool			g_bLeftMousePressed = false;
-
-bool init();
-void handleInput();
-void update();
-void render();
 
 int main(int argc, char* argv[])
 {
-	if (!init())
-	{
-		return 1; // something's wrong
-	}
+    SDL_Window* window = NULL; // 액자, Window (SDL_Window 구조체를 가리키는 포인터)
 
-	g_bRunning = true;
+    SDL_Surface* screenSurface = NULL; // 그림, 윈도우에 포함될 Surface, 그래픽 메모리. Surface위에 그림을 그린다
 
-	while (g_bRunning)
-	{
-		handleInput();
-		update();
-		render();
-	}
+    const int SCREEN_WIDTH = 1920; // 화면 가로 길이
+    const int SCREEN_HEIGHT = 1080; // 화면 세로 길이
 
-	Mix_CloseAudio();
-	Mix_Quit();
-	TTF_CloseFont(g_pFont);
-	TTF_Quit();
-	SDL_Quit();
+    // SDL 초기화(어떤 서브 시스템을 초기화할지 정하는 매개변수)
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) // 오류가 생기면 SDL_Init은 -1을 리턴한다
+    {
+        printf("SDL을 초기화할 수 없습니다! SDL_Error: %s\n", SDL_GetError()); // 에러를 콘솔창에 출력
+    }
+    else
+    {
+        // 윈도우 만들기. 반환값은 SDL_Window 포인터. (윈도우의 이름(게임 이름), x 좌표,          y 좌표,                   가로 길이,     세로 길이,    생성flag(?))
+        window = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+        if (window == NULL) // 에러가 생기면 SDL_CreateWindow는 NULL을 리턴한다.
+        {
+            printf("윈도우를 생성할 수 없습니다! SDL_Error: %s\n", SDL_GetError()); // 에러를 콘솔창에 출력
+        }
+        else
+        {
+            // Surface와 Window를 연결하기. screenSurface가 window와 연결된 Surface가 되게 만든다
+            // 반환값은 SDL_Surface 포인터인데, Window와 연결된 Surface다.
+            // 이렇게 반환된 SDL_Surface의 경우, SDL_Window가 destroy되면 자동으로 같이 free()된다.
+            screenSurface = SDL_GetWindowSurface(window);
 
-	return 0;
-}
+            // surface를 하얗게 채운다(그림을 그릴 SDL_Surface 구조체의 포인터, 채울 직사각형을 표현하는 SDL_Rect 구조체의 포인터 또는 NULL(전체를 채움), 채울 색상)
+            SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
+        
+            // SDL_FillRect 함수를 이용해서 바뀐 Surface를 Window에 갱신시켜준다. (갱신할 Window의 포인터)
+            // 성공했다면 0, 실패했다면 음수를 반환한다.
+            SDL_UpdateWindowSurface(window);
 
-bool init()
-{
-	SDL_Surface* pTempSurface;
+        
+        }
+    }
 
-	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
-	{
-		SDL_Log("SDL_Init Error: %s\n", SDL_GetError());
-		return false;
-	}
+    // window의 메모리를 해제 (window가 해제되면 Surface도 같이 해제됨)
+    SDL_DestroyWindow(window);
 
-	g_pWindow = SDL_CreateWindow("HoseoSDL.2022",
-		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-		640, 480, SDL_WINDOW_SHOWN);
-	if (g_pWindow == NULL)
-	{
-		SDL_Log("SDL_CreateWindow Error: %s\n", SDL_GetError());
-		return false;
-	}
+    // SDL 시스템의 종료
+    SDL_Quit();
 
-	g_pRenderer = SDL_CreateRenderer(g_pWindow, -1, 0);
-	if (g_pRenderer == NULL)
-	{
-		SDL_Log("SDL_CreateRenderer Error: %s\n", SDL_GetError());
-		return false;
-	}
-	else
-	{
-		// SDL Image
-		pTempSurface = IMG_Load("./assets/animate-alpha.png");
-		if (pTempSurface == NULL)
-		{
-			SDL_Log("IMG_Load Error: %s\n", IMG_GetError());
-			return false;
-		}
-		else
-		{
-			g_pTexureImage = SDL_CreateTextureFromSurface(g_pRenderer, pTempSurface);
-			g_RectImage = { 0, 0, 128, 82 };
-			SDL_FreeSurface(pTempSurface);
-		}
-	}
 
-	// SDL TTF 
-	if (TTF_Init() < 0)
-	{
-		SDL_Log("TTF_Init Error: %s\n", TTF_GetError());
-		return false;
-	}
-	else
-	{
-		g_pFont = TTF_OpenFont("./assets/NanumGothic.ttf", 20);
-		if (g_pFont == NULL)
-		{
-			SDL_Log("TTF_OpenFont Error: %s\n", TTF_GetError());
-			return false;
-		}
-		else
-		{
-			// SDL TTF
-#ifdef UNICODE
-			pTempSurface = TTF_RenderUNICODE_Shaded(g_pFont, (Uint16*)L"한글 텍스쳐",
-				SDL_Color{ 0, 0, 255 }, SDL_Color{ 255, 255, 255 });
-#else
-			pTempSurface = TTF_RenderUTF8_Shaded(g_pFont, "한글 텍스쳐",
-				SDL_Color{ 0, 0, 255 }, SDL_Color{ 255, 255, 255 });
-#endif
-			if (pTempSurface == NULL)
-			{
-				SDL_Log("TTF_Render Error: %s\n", TTF_GetError());
-				return false;
-			}
-			else
-			{
-				g_pTexureText = SDL_CreateTextureFromSurface(g_pRenderer, pTempSurface);
-				g_RectText = { 0, 0, pTempSurface->w, pTempSurface->h };
-				SDL_FreeSurface(pTempSurface);
-			}
-		}
-
-	}
-
-	// SDL Mixer 
-	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
-	{
-		SDL_Log("Mix_OpenAudio Error: %s\n", Mix_GetError());
-		return false;
-	}
-	else
-	{
-		g_pChunk = Mix_LoadWAV("./assets/jump.wav");
-		if (g_pChunk == NULL)
-		{
-			SDL_Log("Mix_LoadWAV Error : %s\n", Mix_GetError());
-			return false;
-		}
-		else
-		{
-			Mix_Volume(-1, 128);
-		}
-	}
-
-	return true;
-}
-
-void handleInput()
-{
-	SDL_Event event;
-	while (SDL_PollEvent(&event))
-	{
-		switch (event.type)
-		{
-		case SDL_QUIT:
-			g_bRunning = false;
-			break;
-
-		case SDL_MOUSEBUTTONDOWN:
-			if (event.button.button == SDL_BUTTON_LEFT)
-			{
-				g_bLeftMousePressed = true;
-			}
-			break;
-
-		case SDL_MOUSEBUTTONUP:
-			if (event.button.button == SDL_BUTTON_LEFT)
-			{
-				g_bLeftMousePressed = false;
-			}
-			break;
-
-		}
-	}
-}
-
-void update()
-{
-	if (g_bLeftMousePressed)
-	{
-		// chunk에 담긴 사운드 재생, -1은 가장 가까운 채널, 0은 반복 횟수
-		Mix_PlayChannel(-1, g_pChunk, 0);
-		printf("왼쪽클릭 눌림 - 사운드 재생\n");
-	}
-}
-
-void render()
-{
-	SDL_SetRenderDrawColor(g_pRenderer, 0, 0, 0, 255);
-	SDL_RenderClear(g_pRenderer);
-
-	SDL_RenderCopy(g_pRenderer, g_pTexureImage, &g_RectImage, &g_RectImage);
-	SDL_RenderCopy(g_pRenderer, g_pTexureText, &g_RectText, &g_RectText);
-	filledCircleColor(g_pRenderer, 300, 300, 50, 0xFFFF0000);
-
-	SDL_RenderPresent(g_pRenderer);
+    return 0;
 }
