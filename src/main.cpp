@@ -43,7 +43,7 @@ SDL_Surface* gScreenSurface = NULL;
 
 // 불러와서 화면에 출력할 배경 이미지를 가리켜줄 변수
 
-SDL_Surface * gBackgroundSurface = NULL;
+SDL_Surface* gBackgroundSurface = NULL;
 
 
 // 함수 정의 ↓
@@ -72,6 +72,7 @@ bool init()
         {
             // PNG 로딩 초기화
             // 이미지를 IMG_Init에 전달해줄 플래그 생성
+            /*
             int imgFlags = IMG_INIT_PNG;
             if (!(IMG_Init(imgFlags) & imgFlags)) // IMG_Init이 실패할 경우
             {
@@ -84,6 +85,11 @@ bool init()
                 // 윈도우에 포함된 surface를 잡는다
                 gScreenSurface = SDL_GetWindowSurface(gWindow);
             }
+            */
+
+            // gScreenSurface를 gWindow에 연결시켜줌
+            // 윈도우에 포함된 surface를 잡는다
+            gScreenSurface = SDL_GetWindowSurface(gWindow);
         }
     }
 
@@ -100,7 +106,7 @@ bool loadMedia()
 
     // 배경 이미지 로드하기
 
-    gBackgroundSurface = loadSurface("assets/background.png");
+    gBackgroundSurface = SDL_LoadBMP("/Users/Admin/Documents/GitHub/gf2022-sy220902/assets/background.bmp");
     if (gBackgroundSurface == NULL) // gBackgroundSurface에 제대로 이미지가 로드되지 않았는지 체크
     {
         printf("Failed to load PNG image!\n");
@@ -158,7 +164,7 @@ void close()
     gWindow = NULL; // 포인터 변수가 NULL을 가리키게 해주기
 
     // SDL 서브시스템들을 종료시킨다
-    IMG_Quit();
+    // IMG_Quit();
     SDL_Quit();
 
 }
