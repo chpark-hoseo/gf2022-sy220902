@@ -94,6 +94,30 @@ int main(int argc, char* argv[])
     }
     else
     {
+        // 사용자가 게임을 종료했는지 아닌지 확인하는 플래그 변수
+        // false인 동안 메인 루프가 돌아가고 있다
+        bool quit = false;
+
+        // SDL_Event 선언. 키 입력, 마우스 움직임 등을 뜻한다
+        SDL_Event e;
+
+        // 게임 종료 플래그 변수인 quit이 false인 동안,
+        while (!quit)
+        {
+            // 이벤트 루프. 이벤트 큐가 empty가 될 때까지 계속 처리한다
+            // 키 입력, 마우스 움직임 등을 입력받으면 이벤트가 이벤트 큐로 들어간다
+            // SDL_PollEvent를 호출해 이벤트 대기열에서 가장 최근 이벤트를 가져와 이벤트 데이터를 함수에 전달한 SDL_Event에 넣는다
+            // 큐가 empty 상태가 되면 SDL_PollEvent는 0을 리턴, e.type == SDL_QUIT으로 x버튼을 활성화시킨다.
+            while (SDL_PollEvent(&e) != 0)
+            {
+                if (e.type == SDL_QUIT)
+                {
+                    quit = true;
+                }
+            }
+        }
+
+
         // 미디어 불러오기
         if (!loadMedia())
         {
@@ -113,8 +137,6 @@ int main(int argc, char* argv[])
             // 현재 프레임의 모든 blit 작업이 끝난 후 호출하면 된다.
             SDL_UpdateWindowSurface(gWindow);
 
-            // 3초를 지연시켜 윈도우가 바로 사라지지 않게 한다.
-            SDL_Delay(30000);
         }
     }
 
