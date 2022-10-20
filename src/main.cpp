@@ -1,6 +1,8 @@
 ﻿#include "main.h"
 
 
+// 전역 변수, 함수 선언 ↓
+
 const int SCREEN_WIDTH = 1024; // 화면 가로 길이
 const int SCREEN_HEIGHT = 576; // 화면 세로 길이
 
@@ -13,14 +15,37 @@ bool loadMedia();
 // 미디어를 해제하고 SDL을 종료한다
 void close();
 
+// 키 입력 surface 기호 상수들의 집합 선언하기
+enum KeyPressSurfaces
+{
+    KEY_PRESS_SURFACE_DEFAULT,
+    KEY_PRESS_SURFACE_UP,
+    KEY_PRESS_SURFACE_DOWN,
+    KEY_PRESS_SURFACE_LEFT,
+    KEY_PRESS_SURFACE_RIGHT,
+    KEY_PRESS_SURFACE_TOTAL
+};
+
+// 로딩 경로를 복사 / 붙여넣기 하지 않게 해주는 함수?
+SDL_Surface* loadSurface(std::string path);
+
 // 액자, Window (SDL_Window 구조체를 가리키는 포인터)
 SDL_Window* gWindow = NULL;
 
 // 그림, 윈도우에 포함될 Surface, 그래픽 메모리. Surface위에 그림을 그린다
 SDL_Surface* gScreenSurface = NULL;
 
-// 불러와서 화면에 출력할 이미지를 가리켜줄 변수
-SDL_Surface* gHelloWorld = NULL;
+// 키 입력 시 사용할 이미지들을 저장하기 위한 SDL_Surface* 포인터 타입의 배열.
+SDL_Surface* gKeyPressSurfaces[KEY_PRESS_SURFACE_TOTAL];
+
+// gKeyPressSurfaces 중 하나를 화면에 blit 하기 위한 변수
+SDL_Surface* gCurrentSurface = NULL;
+
+// 불러와서 화면에 출력할 배경 이미지를 가리켜줄 변수
+SDL_Surface* gBackground = NULL;
+
+
+// 함수 정의 ↓
 
 bool init()
 {
@@ -53,26 +78,77 @@ bool init()
     return success; // 함수 init은 자신의 성공 여부 플래그 변수를 true / false로 반환
 }
 
+
+// 이미지를 로드할 때 문제가 발생하면 오류를 보고하는 함수이다.
+SDL_Surface* loadSurface(std::string path)
+{
+    SDL_Surface* loadedSurface = SDL_LoadBMP(path.c_str());
+    if (loadedSurface == NULL)
+    {
+        printf("Unable to load image %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
+    }
+
+    return loadedSurface;
+}
+
 bool loadMedia()
 {
     // 성공 / 실패 플래그 변수 만들기
     bool success = true;
 
-    gHelloWorld = SDL_LoadBMP("/Users/Admin/Documents/GitHub/gf2022-sy220902/assets/background.BMP");
-    if (gHelloWorld == NULL) // gHelloWorld에 제대로 이미지가 로드되지 않았는지 체크
+
+    // 배경 이미지 로드하기
+    gBackground = SDL_LoadBMP("/Users/Admin/Documents/GitHub/gf2022-sy220902/assets/background.BMP");
+    if (gBackground == NULL) // gBackground에 제대로 이미지가 로드되지 않았는지 체크
     {
         printf("Unable to load image %s! SDL Error: %s\n", "assets/background.BMP", SDL_GetError());
         success = false;
     }
+
+    gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT] = loadSurface("/Users/Admin/Documents/GitHub/gf2022-sy220902/assets/default.BMP");
+    if (gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT] == NULL)
+    {
+        printf("Failed to load default image!\n");
+        success = false;
+    }
+    
+    gKeyPressSurfaces[KEY_PRESS_SURFACE_UP] = loadSurface("/Users/Admin/Documents/GitHub/gf2022-sy220902/assets/up.BMP");
+    if (gKeyPressSurfaces[KEY_PRESS_SURFACE_UP] == NULL)
+    {
+        printf("Failed to load up image!\n");
+        success = false;
+    }
+
+    gKeyPressSurfaces[KEY_PRESS_SURFACE_DOWN] = loadSurface("/Users/Admin/Documents/GitHub/gf2022-sy220902/assets/down.BMP");
+    if (gKeyPressSurfaces[KEY_PRESS_SURFACE_DOWN] == NULL)
+    {
+        printf("Failed to load down image!\n");
+        success = false;
+    }
+
+    gKeyPressSurfaces[KEY_PRESS_SURFACE_LEFT] = loadSurface("/Users/Admin/Documents/GitHub/gf2022-sy220902/assets/left.BMP");
+    if (gKeyPressSurfaces[KEY_PRESS_SURFACE_LEFT] == NULL)
+    {
+        printf("Failed to load left image!\n");
+        success = false;
+    }
+
+    gKeyPressSurfaces[KEY_PRESS_SURFACE_RIGHT] = loadSurface("/Users/Admin/Documents/GitHub/gf2022-sy220902/assets/right.BMP");
+    if (gKeyPressSurfaces[KEY_PRESS_SURFACE_RIGHT] == NULL)
+    {
+        printf("Failed to load right image!\n");
+        success = false;
+    }
+
 
     return success; // 함수 loadMedia는 자신의 성공 여부 플래그 변수를 true / false로 반환
 }
 
 void close()
 {
-    // surface를 할당 해제시킨다(?)
-    SDL_FreeSurface(gHelloWorld);
-    gHelloWorld = NULL; // 포인터 변수가 NULL을 가리키게 해주기
+    // surface를 할당 해제시킨다
+    SDL_FreeSurface(gBackground);
+    gBackground = NULL; // 포인터 변수가 NULL을 가리키게 해주기
 
     // 윈도우 삭제
     SDL_DestroyWindow(gWindow);
@@ -83,7 +159,7 @@ void close()
 
 }
 
-
+// main
 
 int main(int argc, char* argv[])
 {
@@ -94,29 +170,6 @@ int main(int argc, char* argv[])
     }
     else
     {
-        // 사용자가 게임을 종료했는지 아닌지 확인하는 플래그 변수
-        // false인 동안 메인 루프가 돌아가고 있다
-        bool quit = false;
-
-        // SDL_Event 선언. 키 입력, 마우스 움직임 등을 뜻한다
-        SDL_Event e;
-
-        // 게임 종료 플래그 변수인 quit이 false인 동안,
-        while (!quit)
-        {
-            // 이벤트 루프. 이벤트 큐가 empty가 될 때까지 계속 처리한다
-            // 키 입력, 마우스 움직임 등을 입력받으면 이벤트가 이벤트 큐로 들어간다
-            // SDL_PollEvent를 호출해 이벤트 대기열에서 가장 최근 이벤트를 가져와 이벤트 데이터를 함수에 전달한 SDL_Event에 넣는다
-            // 큐가 empty 상태가 되면 SDL_PollEvent는 0을 리턴, e.type == SDL_QUIT으로 x버튼을 활성화시킨다.
-            while (SDL_PollEvent(&e) != 0)
-            {
-                if (e.type == SDL_QUIT)
-                {
-                    quit = true;
-                }
-            }
-        }
-
 
         // 미디어 불러오기
         if (!loadMedia())
@@ -130,14 +183,79 @@ int main(int argc, char* argv[])
             // Blit은 비트들을 그래픽 메모리에서 다른 곳으로 복사하는 것을 뜻한다.
             // (소스 이미지, ?, 이미지들의 목적지, ?)
             // 백 버퍼로 렌더링 된다.
-            SDL_BlitSurface(gHelloWorld, NULL, gScreenSurface, NULL);
+            SDL_BlitSurface(gBackground, NULL, gScreenSurface, NULL);
 
             // Surface를 업데이트한다.
             // SDL_UpdateWindowSurface를 모든 blit이 끝날 때마다 호출할 필요 없이
             // 현재 프레임의 모든 blit 작업이 끝난 후 호출하면 된다.
             SDL_UpdateWindowSurface(gWindow);
-
         }
+
+        // 사용자가 게임을 종료했는지 아닌지 확인하는 플래그 변수
+        // false인 동안 메인 루프가 돌아가고 있다
+        bool quit = false;
+
+        // SDL_Event 선언. 키 입력, 마우스 움직임 등을 뜻한다
+        SDL_Event e;
+
+        // 메인 루프로 들어가기 전에 화면에 보여줄 기본 키보드 surface
+        gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT];
+
+        // 게임 종료 플래그 변수인 quit이 false인 동안,
+        while (!quit)
+        {
+            // 이벤트 루프. 이벤트 큐가 empty가 될 때까지 계속 처리한다
+            // 키 입력, 마우스 움직임 등을 입력받으면 이벤트가 이벤트 큐로 들어간다
+            // SDL_PollEvent를 호출해 이벤트 대기열에서 가장 최근 이벤트를 가져와 이벤트 데이터를 함수에 전달한 SDL_Event에 넣는다
+            // 큐가 empty 상태가 되면 SDL_PollEvent는 0을 리턴, e.type == SDL_QUIT으로 x버튼을 활성화시킨다.
+            while (SDL_PollEvent(&e) != 0)
+            {
+                // 유저가 종료를 요청했을 때
+                if (e.type == SDL_QUIT)
+                {
+                    quit = true;
+                }
+                // 유저가 키보드를 입력했을 때
+                else if (e.type == SDL_KEYDOWN)
+                {
+                    // 키 입력을 바탕으로 surface를 선택한다.
+                    switch (e.key.keysym.sym)
+                    {
+                        case SDLK_UP:
+                            gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_UP];
+                            break;
+
+                        case SDLK_DOWN:
+                            gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_DOWN];
+                            break;
+
+                        case SDLK_LEFT:
+                            gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_LEFT];
+                            break;
+
+                        case SDLK_RIGHT:
+                            gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_RIGHT];
+                            break;
+
+                        default:
+                            gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT];
+                            break;
+                    }
+                }
+
+                // 선택되어 gCurrentSurface에 저장된 키를 gScreenSurface에 blit한다.
+                SDL_BlitSurface(gCurrentSurface, NULL, gScreenSurface, NULL);
+
+                // gWindow의 Surface를 업데이트한다.
+                SDL_UpdateWindowSurface(gWindow);
+
+
+
+
+            }
+        }
+
+
     }
 
     
