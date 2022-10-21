@@ -106,7 +106,7 @@ bool loadMedia()
 
     // 배경 이미지 로드하기
 
-    gBackgroundSurface = loadSurface("assets/background.png");
+    gBackgroundSurface = loadSurface("Users/user/Documents/GitHub/gf2022-sy220902/assets/background.png");
     if (gBackgroundSurface == NULL) // gBackgroundSurface에 제대로 이미지가 로드되지 않았는지 체크
     {
         printf("Failed to load PNG image!\n");
