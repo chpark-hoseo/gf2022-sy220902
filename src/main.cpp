@@ -288,6 +288,12 @@ int main(int argc, char* argv[])
                 // 백 버퍼로 렌더링 된다.
                         SDL_BlitSurface(gBackgroundSurface, NULL, gScreenSurface, NULL);
 
+                // 이미지 적용하기
+                // SDL_BlitSurface를 이용해 로드된 surface를 스크린 surface 위에 blit한다.
+                // Blit은 비트들을 그래픽 메모리에서 다른 곳으로 복사하는 것을 뜻한다.
+                // (소스 이미지, ?, 이미지들의 목적지, ?)
+                // 백 버퍼로 렌더링 된다.
+                SDL_BlitSurface(gBackgroundSurface, NULL, gScreenSurface, NULL);
 
                                     // Surface를 업데이트한다.
                 // SDL_UpdateWindowSurface를 모든 blit이 끝날 때마다 호출할 필요 없이
