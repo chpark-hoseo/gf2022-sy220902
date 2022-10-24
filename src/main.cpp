@@ -82,7 +82,7 @@ bool init()
         {
             // PNG 로딩 초기화
             // 이미지를 IMG_Init에 전달해줄 플래그 생성
-            /*
+            
             int imgFlags = IMG_INIT_PNG;
             if (!(IMG_Init(imgFlags) & imgFlags)) // IMG_Init이 실패할 경우
             {
@@ -95,7 +95,7 @@ bool init()
                 // 윈도우에 포함된 surface를 잡는다
                 gScreenSurface = SDL_GetWindowSurface(gWindow);
             }
-            */
+            
 
             // gScreenSurface를 gWindow에 연결시켜줌
             // 윈도우에 포함된 surface를 잡는다
@@ -116,7 +116,7 @@ bool loadMedia()
 
     // 배경 이미지 로드하기
 
-    gBackgroundSurface = SDL_LoadBMP("/Users/Admin/Documents/GitHub/gf2022-sy220902/assets/background.bmp");
+    gBackgroundSurface = loadSurface("Users/user/Documents/GitHub/gf2022-sy220902/assets/background.png");
     if (gBackgroundSurface == NULL) // gBackgroundSurface에 제대로 이미지가 로드되지 않았는지 체크
     {
         printf("Failed to load PNG image!\n");
@@ -174,7 +174,7 @@ void close()
     gWindow = NULL; // 포인터 변수가 NULL을 가리키게 해주기
 
     // SDL 서브시스템들을 종료시킨다
-    // IMG_Quit();
+    IMG_Quit();
     SDL_Quit();
 
 }
@@ -224,90 +224,91 @@ int main(int argc, char* argv[])
         }
         else
         {
-        
-        // 사용자가 게임을 종료했는지 아닌지 확인하는 플래그 변수
-        // false인 동안 메인 루프가 돌아가고 있다
+            // 사용자가 게임을 종료했는지 아닌지 확인하는 플래그 변수
+            // false인 동안 메인 루프가 돌아가고 있다
             bool quit = false;
-                        // SDL_Event 선언. 키 입력, 마우스 움직임 등을 뜻한다
-                SDL_Event e;
+            // SDL_Event 선언. 키 입력, 마우스 움직임 등을 뜻한다
+            SDL_Event e;
 
-                        // 메인 루프로 들어가기 전에 화면에 보여줄 기본 키보드 surface
+            // 메인 루프로 들어가기 전에 화면에 보여줄 기본 키보드 surface
             // gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT];
 
 
-                            // 게임 종료 플래그 변수인 quit이 false인 동안, (메인 무한 루프)
-                while (!quit)
+            // 게임 종료 플래그 변수인 quit이 false인 동안, (메인 무한 루프)
+            while (!quit)
+            {
+
+            // 이벤트 루프. 이벤트 큐가 empty가 될 때까지 계속 처리한다
+            // 키 입력, 마우스 움직임 등을 입력받으면 이벤트가 이벤트 큐로 들어간다
+            // SDL_PollEvent를 호출해 이벤트 대기열에서 가장 최근 이벤트를 가져와 이벤트 데이터를 함수에 전달한 SDL_Event에 넣는다
+            // 큐가 empty 상태가 되면 SDL_PollEvent는 0을 리턴, e.type == SDL_QUIT으로 x버튼을 활성화시킨다.
+                while (SDL_PollEvent(&e) != 0)
                 {
 
-                                    // 이벤트 루프. 이벤트 큐가 empty가 될 때까지 계속 처리한다
-                // 키 입력, 마우스 움직임 등을 입력받으면 이벤트가 이벤트 큐로 들어간다
-                // SDL_PollEvent를 호출해 이벤트 대기열에서 가장 최근 이벤트를 가져와 이벤트 데이터를 함수에 전달한 SDL_Event에 넣는다
-                // 큐가 empty 상태가 되면 SDL_PollEvent는 0을 리턴, e.type == SDL_QUIT으로 x버튼을 활성화시킨다.
-                        while (SDL_PollEvent(&e) != 0)
-                        {
+                    // 유저가 종료를 요청했을 때
+                    if (e.type == SDL_QUIT)
+                    {
+                        quit = true;
+                    }
+        /*
+        // 유저가 키보드를 입력했을 때
+        else if (e.type == SDL_KEYDOWN)
+        {
+        // 키 입력을 바탕으로 surface를 선택한다.
+        switch (e.key.keysym.sym)
+        {
+        case SDLK_UP:
+        gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_UP];
+        break;
 
-                                                // 유저가 종료를 요청했을 때
-                                if (e.type == SDL_QUIT)
-                                {
+        case SDLK_DOWN:
+        gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_DOWN];
+        break;
 
-                                    quit = true;
-                                }
-                            /*
-                            // 유저가 키보드를 입력했을 때
-                            else if (e.type == SDL_KEYDOWN)
-                            {
-                                // 키 입력을 바탕으로 surface를 선택한다.
-                                switch (e.key.keysym.sym)
-                                {
-                                    case SDLK_UP:
-                                        gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_UP];
-                                        break;
+        case SDLK_LEFT:
+        gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_LEFT];
+        break;
 
-                                    case SDLK_DOWN:
-                                        gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_DOWN];
-                                        break;
+        case SDLK_RIGHT:
+        gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_RIGHT];
+        break;
 
-                                    case SDLK_LEFT:
-                                        gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_LEFT];
-                                        break;
-
-                                    case SDLK_RIGHT:
-                                        gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_RIGHT];
-                                        break;
-
-                                    default:
-                                        gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT];
-                                        break;
-                                }
-                            }
+        default:
+        gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT];
+        break;
+        }
+        }
 
 
-                                                // 선택되어 gCurrentSurface에 저장된 키를 gScreenSurface에 blit한다.
-                    SDL_BlitSurface(gCurrentSurface, NULL, gScreenSurface, NULL);
+        // 선택되어 gCurrentSurface에 저장된 키를 gScreenSurface에 blit한다.
+         SDL_BlitSurface(gCurrentSurface, NULL, gScreenSurface, NULL);
 
 
-                                        // gWindow의 Surface를 업데이트한다.
-                    SDL_UpdateWindowSurface(gWindow);
-                    */
-                        }
+        // gWindow의 Surface를 업데이트한다.
+        SDL_UpdateWindowSurface(gWindow);
+        */
+                }
 
-                                    // 이미지 적용하기
+                // 이미지 적용하기
                 // SDL_BlitSurface를 이용해 로드된 surface를 스크린 surface 위에 blit한다.
                 // Blit은 비트들을 그래픽 메모리에서 다른 곳으로 복사하는 것을 뜻한다.
                 // (소스 이미지, ?, 이미지들의 목적지, ?)
                 // 백 버퍼로 렌더링 된다.
-                        SDL_BlitSurface(gBackgroundSurface, NULL, gScreenSurface, NULL);
+                SDL_BlitSurface(gBackgroundSurface, NULL, gScreenSurface, NULL);
 
+                // 이미지 적용하기
+                // SDL_BlitSurface를 이용해 로드된 surface를 스크린 surface 위에 blit한다.
+                // Blit은 비트들을 그래픽 메모리에서 다른 곳으로 복사하는 것을 뜻한다.
+                // (소스 이미지, ?, 이미지들의 목적지, ?)
+                // 백 버퍼로 렌더링 된다.
+                SDL_BlitSurface(gBackgroundSurface, NULL, gScreenSurface, NULL);
 
-                                    // Surface를 업데이트한다.
+                // Surface를 업데이트한다.
                 // SDL_UpdateWindowSurface를 모든 blit이 끝날 때마다 호출할 필요 없이
                 // 현재 프레임의 모든 blit 작업이 끝난 후 호출하면 된다.
-                        SDL_UpdateWindowSurface(gWindow);
-
-
-                }
+                SDL_UpdateWindowSurface(gWindow);
+            }
         }
-
     }
 
 
