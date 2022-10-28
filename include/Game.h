@@ -3,6 +3,7 @@
 #include <TextureManager.h>
 #include <GameObject.h>
 #include <Player.h>
+#include <Monster.h>
 
 class Game
 {
@@ -24,6 +25,7 @@ private:
 	bool m_bRunning;
 	GameObject m_go;
 	Player m_player;
+	Monster m_monster;
 
 	//TextureManager m_textureManager;
 	int m_currentFrame;

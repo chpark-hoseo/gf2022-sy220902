@@ -36,6 +36,7 @@ bool Game::init(const char* title, int xpos, int ypos, int height, int width, in
 
     m_go.load(100, 100, 128, 82, "animate");
     m_player.load(300, 300, 128, 82, "animate");
+    m_monster.load(300, 300, 128, 82, "animate");
 
 
     m_bRunning = true;
@@ -47,6 +48,7 @@ void Game::update()
     {
         m_go.update();
         m_player.update();
+        m_monster.update();
     }
     // m_currentFrame = ((SDL_GetTicks() / 100) % 6);
     // 게임 데이터 갱신
@@ -58,6 +60,7 @@ void Game::render()
 
     m_go.draw(m_pRenderer);
     m_player.draw(m_pRenderer);
+    m_monster.draw(m_pRenderer);
 
     
     /*
