@@ -4,6 +4,7 @@
 #include <GameObject.h>
 #include <Player.h>
 #include <Monster.h>
+#include <vector>
 
 class Game
 {
@@ -26,6 +27,8 @@ private:
 	GameObject m_go;
 	Player m_player;
 	Monster m_monster;
+
+	std::vector<GameObject*> m_gameObjects;
 
 	//TextureManager m_textureManager;
 	int m_currentFrame;
