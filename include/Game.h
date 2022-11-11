@@ -1,9 +1,9 @@
 #ifndef __Game__
 #define __Game__
 #include <TextureManager.h>
-#include <GameObject.h>
+#include <SDLGameObject.h>
 #include <Player.h>
-#include <Monster.h>
+#include <Enemy.h>
 #include <vector>
 
 class Game
@@ -33,9 +33,9 @@ private:
 	SDL_Window* m_pWindow;
 	SDL_Renderer* m_pRenderer;
 	bool m_bRunning;
-	GameObject m_go;
-	Player m_player;
-	Monster m_monster;
+	//GameObject m_go;
+	//Player m_player;
+	//Monster m_monster;
 
 	static Game* s_pInstance; // 정적 멤버변수 
 
