@@ -10,7 +10,8 @@ void Player::draw()
 
 void Player::update()
 {
-    m_x -= 1;
+    m_position.setX(m_position.getX() + 1);
+    m_position.setY(m_position.getY() + 1);
     m_currentFrame = ((SDL_GetTicks() / 100) % 6);
 }
 

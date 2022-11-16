@@ -48,6 +48,8 @@ bool Game::init(const char* title, int xpos, int ypos, int height, int width, in
 
 void Game::update()
 {
+
+
     {
         for (int i = 0; i < m_gameObjects.size(); i++)
         {

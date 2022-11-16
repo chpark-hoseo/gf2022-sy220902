@@ -1,5 +1,6 @@
 #pragma once
 #include <GameObject.h>
+#include <Vector2D.h>
 
 class SDLGameObject : public GameObject {
 public:
@@ -10,8 +11,7 @@ public:
     virtual ~SDLGameObject() {}
 
 protected:
-    int m_x;
-    int m_y;
+    Vector2D m_position;
     int m_width;
     int m_height;
     int m_currentRow;
