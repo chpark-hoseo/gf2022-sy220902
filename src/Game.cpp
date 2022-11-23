@@ -1,6 +1,7 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL.h>
 #include "Game.h"
+#include "InputHandler.h"
 
 Game* Game::s_pInstance = 0;
 
@@ -80,23 +81,12 @@ bool Game::running()
 
 void Game::handleEvents()
 {
-    SDL_Event event;
-    while (SDL_PollEvent(&event)) // if문은 한 번만 작동하고 끝나기 때문에 switch-case에서 뭐든지 하나의 케이스를 처리하면 끝나버리지만
-        // while문은 이벤트가 진행되는 동안 계속 작동되고 있기 때문에 QUIT이외에 다른 케이스도 더 추가할 수 있다. 
-    {
-        switch (event.type)
-        {
-        case SDL_QUIT:
-            m_bRunning = false;
-            break;
-        default:
-            break;
-        }
-    }
+    TheInputHandler::Instance()->update();
 }
 
 void Game::clean()
 {
+    TheInputHandler::Instance()->clean();
     SDL_DestroyWindow(m_pWindow);
     SDL_DestroyRenderer(m_pRenderer);
     SDL_Quit();

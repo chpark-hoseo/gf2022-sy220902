@@ -17,6 +17,7 @@ public:
 	void update();
 	bool running();
 	void handleEvents();
+	void quit() { m_bRunning = false; }
 	void clean();
 	bool move = false;
 
