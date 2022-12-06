@@ -3,7 +3,7 @@
 #include <TextureManager.h>
 #include <SDLGameObject.h>
 #include <Player.h>
-#include <Enemy.h>
+#include <Hurdle.h>
 #include <vector>
 
 class Game
@@ -20,6 +20,10 @@ public:
 	void quit() { m_bRunning = false; }
 	void clean();
 	bool move = false;
+	
+	void DrawGameOver(const int score);
+	// bool isCollision(); // 충돌 판정 만들기
+
 
 	static Game* Instance() {
 		if (s_pInstance == 0) {
@@ -34,9 +38,8 @@ private:
 	SDL_Window* m_pWindow;
 	SDL_Renderer* m_pRenderer;
 	bool m_bRunning;
-	//GameObject m_go;
-	//Player m_player;
-	//Monster m_monster;
+
+	
 
 	static Game* s_pInstance; // 정적 멤버변수 
 

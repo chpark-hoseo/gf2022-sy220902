@@ -30,11 +30,17 @@ bool Game::init(const char* title, int xpos, int ypos, int height, int width, in
     }
 
 
-    m_gameObjects.push_back(new Player(new LoaderParams(100, 100, 128, 82, "animate")));
-    m_gameObjects.push_back(new Enemy(new LoaderParams(100, 100, 128, 82, "animate")));
+    m_gameObjects.push_back(new Player(new LoaderParams(50, 400, 196, 188, "animate")));
+
+    m_gameObjects.push_back(new Hurdle(new LoaderParams(1050, 500, 64, 64, "pokeball")));
 
 
-    if (!TheTextureManager::Instance()->load("Assets/animate-alpha.png", "animate", m_pRenderer))
+    if (!TheTextureManager::Instance()->load("Assets/vnfls.png", "animate", m_pRenderer)) 
+    {
+        return false;
+    }
+
+    if (!TheTextureManager::Instance()->load("Assets/pokeball.png", "pokeball", m_pRenderer)) 
     {
         return false;
     }
@@ -57,6 +63,9 @@ void Game::update()
             m_gameObjects[i]->update();
         }
     }
+
+
+
     // m_currentFrame = ((SDL_GetTicks() / 100) % 6);
     // 게임 데이터 갱신
 }
@@ -83,6 +92,18 @@ void Game::handleEvents()
 {
     TheInputHandler::Instance()->update();
 }
+
+
+void DrawGameOver(const int score)
+{
+    printf("\n\n\n\n\n\n\n\n\n");
+    system("GAME OVER\n");
+}
+
+
+
+
+
 
 void Game::clean()
 {

@@ -10,5 +10,8 @@ public:
     virtual void update();
     virtual void clean();
     void handleInput();
+
+    bool isJumping = false;
+    bool isBottom = true;
     
 };
