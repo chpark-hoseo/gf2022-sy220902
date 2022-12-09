@@ -34,6 +34,8 @@ public:
 	}
 	SDL_Renderer* getRenderer() const { return m_pRenderer; }
 
+	Player* getPlayer() { return (Player*) m_gameObjects[0]; }
+
 private:
 	SDL_Window* m_pWindow;
 	SDL_Renderer* m_pRenderer;
