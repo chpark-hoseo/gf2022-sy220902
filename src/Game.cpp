@@ -5,6 +5,8 @@
 
 Game* Game::s_pInstance = 0;
 
+
+
 bool Game::init(const char* title, int xpos, int ypos, int height, int width, int flags)
 {
     if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
@@ -30,9 +32,15 @@ bool Game::init(const char* title, int xpos, int ypos, int height, int width, in
     }
 
 
+
     m_gameObjects.push_back(new Player(new LoaderParams(50, 400, 196, 188, "animate")));
 
     m_gameObjects.push_back(new Hurdle(new LoaderParams(1050, 500, 64, 64, "pokeball")));
+
+    m_gameObjects.push_back(new Hurdle(new LoaderParams(1550, 500, 64, 64, "pokeball")));
+
+    //m_gameObjects.push_back(new Hurdle(new LoaderParams(0, 0, 800, 600, "gameover")));
+
 
 
     if (!TheTextureManager::Instance()->load("Assets/vnfls.png", "animate", m_pRenderer)) 
@@ -41,6 +49,11 @@ bool Game::init(const char* title, int xpos, int ypos, int height, int width, in
     }
 
     if (!TheTextureManager::Instance()->load("Assets/pokeball.png", "pokeball", m_pRenderer)) 
+    {
+        return false;
+    }
+
+    if (!TheTextureManager::Instance()->load("Assets/gameover.png", "gameover", m_pRenderer))
     {
         return false;
     }
@@ -93,12 +106,6 @@ void Game::handleEvents()
     TheInputHandler::Instance()->update();
 }
 
-
-void DrawGameOver(const int score)
-{
-    printf("\n\n\n\n\n\n\n\n\n");
-    system("GAME OVER\n");
-}
 
 
 

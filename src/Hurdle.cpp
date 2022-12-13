@@ -19,17 +19,26 @@ void Hurdle::update()
     Vector2D  pos = player->m_position;
 
     // 충돌 검사
-    if (m_position.getX() > 50 && m_position.getX() < 100 && pos.getY() >= 300) // 수치 조정
+    if (m_position.getX() > 50 && m_position.getX() < 200 && pos.getY() >= 350) // 수치 조정
     {
         printf("GameOver"); // 게임 종료
-       
+        SDL_Quit();
+        
     }
 
 
 
-    printf("%f %f\n", pos.getX(), pos.getY());
+    //printf("%f %f\n", pos.getX(), pos.getY());
 
-    m_velocity.setX(-5);
+    if (score < 1000)
+    {
+        m_velocity.setX(-5);
+    }
+    else if (score >= 1000)
+    {
+        m_velocity.setX(-7);
+    }
+    
 
     if (m_position.getX() < -100)
     {
@@ -38,6 +47,8 @@ void Hurdle::update()
         printf("SCORE : %d", score);
         printf("\n\n\n\n\n\n\n\n\n");
     }
+
+    
 
 
     //m_currentFrame = ((SDL_GetTicks() / 100) % 6);

@@ -21,7 +21,6 @@ public:
 	void clean();
 	bool move = false;
 	
-	void DrawGameOver(const int score);
 	// bool isCollision(); // 충돌 판정 만들기
 
 
